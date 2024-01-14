@@ -1,4 +1,4 @@
-CREATE TABLE client(
+CREATE TABLE customer(
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `cpf` VARCHAR(11) NOT NULL,
     `email` VARCHAR(255) NOT NULL,
