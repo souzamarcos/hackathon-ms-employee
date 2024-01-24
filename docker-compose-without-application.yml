@@ -14,6 +14,7 @@ services:
       - AWS_SECRET_ACCESS_KEY=fiap
       - DEFAULT_REGION=us-east-1
       - SERVICES=dynamodb
+      - CLEAR_TMP_FOLDER=0
     volumes:
       - "./config/localstack/init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh"
       - "${TMPDIR:-/tmp}/localstack:/tmp/localstack"
