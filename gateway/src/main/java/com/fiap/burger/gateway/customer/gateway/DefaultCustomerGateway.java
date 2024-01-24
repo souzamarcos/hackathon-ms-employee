@@ -1,42 +1,40 @@
 package com.fiap.burger.gateway.customer.gateway;
 
 import com.fiap.burger.entity.customer.Customer;
-import com.fiap.burger.gateway.customer.dao.CustomerDAO;
-import com.fiap.burger.gateway.customer.model.CustomerJPA;
-import com.fiap.burger.usecase.adapter.gateway.CustomerCpfGateway;
+import com.fiap.burger.gateway.customer.model.CustomerModel;
 import com.fiap.burger.usecase.adapter.gateway.CustomerGateway;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
+import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 
 @Repository
 public class DefaultCustomerGateway implements CustomerGateway {
 
-    @Autowired
-    private CustomerDAO customerDAO;
+    private DynamoDbEnhancedClient enhancedCustomer;
+    private DynamoDbTable<CustomerModel> table;
 
-    @Autowired
-    private CustomerCpfGateway customerCpfGateway;
+    DefaultCustomerGateway(DynamoDbEnhancedClient enhancedCustomer, @Value("${dynamodb.tablename}") String tableName) {
+        this.enhancedCustomer = enhancedCustomer;
+        this.table = enhancedCustomer.table(tableName, TableSchema.fromBean(CustomerModel.class));
+    }
 
     @Override
     public Customer findById(Long id) {
-        return customerDAO.findById(id).map(CustomerJPA::toEntity).orElse(null);
+        return null;
+    }
+
+    @Override
+    public Customer save(Customer customer) {
+        // table.putItem(new CustomerModel(customer));
+        return null;
     }
 
     @Override
     public Customer findByCpf(String cpf) {
-        Optional<Customer> customer = customerDAO.findByCpf(cpf).map(CustomerJPA::toEntity);
-        return customer.orElse(null);
+        return null;
     }
 
-    @Override
-    @Transactional
-    public Customer save(Customer customer) {
-        Customer persisted = customerDAO.save(CustomerJPA.toJPA(customer)).toEntity();
-        customerCpfGateway.save(persisted.getCpf(), persisted.getId());
-        return persisted;
-    }
 
 }
