@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 public record CustomerResponseDto(
 
     @NotBlank
-    Long id,
+    String id,
     @NotBlank
     String cpf,
     @NotBlank

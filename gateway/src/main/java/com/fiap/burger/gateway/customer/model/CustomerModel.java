@@ -3,6 +3,7 @@ package com.fiap.burger.gateway.customer.model;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 import com.fiap.burger.entity.customer.Customer;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
@@ -13,7 +14,7 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortK
 @DynamoDbBean
 public class CustomerModel {
 
-    private Long id;
+    private String id;
     private String cpf;
     private String email;
     private String name;
@@ -24,7 +25,7 @@ public class CustomerModel {
     public CustomerModel() {}
 
     public CustomerModel(Customer customer) {
-        this.id = customer.getId();
+        this.id = UUID.randomUUID().toString();
         this.cpf = customer.getCpf();
         this.email = customer.getEmail();
         this.name = customer.getName();
@@ -35,11 +36,11 @@ public class CustomerModel {
 
     @DynamoDbPartitionKey
     @DynamoDbAttribute("id")
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -120,6 +121,18 @@ public class CustomerModel {
                 ", modifiedAt=" + modifiedAt +
                 ", deletedAt=" + deletedAt +
                 '}';
+    }
+
+    public Customer toEntity() {
+        return new Customer(
+                id,
+                cpf,
+                email,
+                name,
+                createdAt,
+                modifiedAt,
+                deletedAt
+        );
     }
 }
 

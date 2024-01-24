@@ -27,8 +27,9 @@ public class DefaultCustomerGateway implements CustomerGateway {
 
     @Override
     public Customer save(Customer customer) {
-        // table.putItem(new CustomerModel(customer));
-        return null;
+        var newCustomer = new CustomerModel(customer);
+        table.putItem(newCustomer);
+        return newCustomer.toEntity();
     }
 
     @Override
