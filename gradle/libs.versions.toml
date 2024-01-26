@@ -7,6 +7,7 @@ hibernate = "6.2.4.Final"
 hibernate-validator = "8.0.0.Final"
 openapi = "2.1.0"
 aws = "2.21.10"
+cucumber = "7.15.0"
 
 [libraries]
 flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
@@ -21,4 +22,8 @@ hibernate-validator = { module = "org.hibernate.validator:hibernate-validator", 
 openapi = { module = "org.springdoc:springdoc-openapi-starter-webmvc-ui", version.ref = "openapi" }
 aws-dynamodb = { module = "software.amazon.awssdk:dynamodb", version.ref = "aws" }
 aws-dynamodb-enhanced = { module = "software.amazon.awssdk:dynamodb-enhanced", version.ref = "aws" }
+cucumber-java = { module = "io.cucumber:cucumber-java", version.ref = "cucumber" }
+cucumber-spring = { module = "io.cucumber:cucumber-spring", version.ref = "cucumber" }
+cucumber-junit = { module = "io.cucumber:cucumber-junit", version.ref = "cucumber" }
+cucumber-junit-platform-engine = { module = "io.cucumber:cucumber-junit-platform-engine", version.ref = "cucumber" }
 

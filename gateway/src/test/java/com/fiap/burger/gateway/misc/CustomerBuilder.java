@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public class CustomerBuilder {
 
-    private Long id = 1L;
+    private String id = "1L";
 
     private String cpf = "68203895077";
 
@@ -20,7 +20,7 @@ public class CustomerBuilder {
 
     private LocalDateTime deletedAt = null;
 
-    public CustomerBuilder withId(Long id) {
+    public CustomerBuilder withId(String id) {
         this.id = id;
         return this;
     }

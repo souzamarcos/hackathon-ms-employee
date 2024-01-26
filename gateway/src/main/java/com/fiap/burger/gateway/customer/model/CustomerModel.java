@@ -6,10 +6,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 import com.fiap.burger.entity.customer.Customer;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSortKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.*;
 
 @DynamoDbBean
 public class CustomerModel {
@@ -36,6 +33,7 @@ public class CustomerModel {
 
     @DynamoDbPartitionKey
     @DynamoDbAttribute("id")
+    @DynamoDbSecondarySortKey(indexNames = "id-cpf")
     public String getId() {
         return id;
     }
@@ -44,6 +42,8 @@ public class CustomerModel {
         this.id = id;
     }
 
+    @DynamoDbSortKey
+    @DynamoDbSecondaryPartitionKey(indexNames = "id-cpf")
     public String getCpf() {
         return cpf;
     }
@@ -88,7 +88,6 @@ public class CustomerModel {
         this.modifiedAt = modifiedAt;
     }
 
-    @DynamoDbSortKey
     @DynamoDbAttribute("deleted_at")
     public LocalDateTime getDeletedAt() {
         return deletedAt;

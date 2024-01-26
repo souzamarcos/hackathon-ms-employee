@@ -6,6 +6,4 @@ dependencies {
 
 
     implementation(rootProject.libs.aws.dynamodb.enhanced)
-//    implementation("com.github.derjust:spring-data-dynamodb:5.1.0")
-
 }

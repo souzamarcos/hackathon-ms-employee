@@ -1,5 +1,6 @@
 package com.fiap.burger.gateway.misc;
 
+import com.fiap.burger.usecase.misc.profiles.NotTest;
 import com.fiap.burger.usecase.misc.profiles.Production;
 import java.net.URI;
 import org.springframework.beans.factory.annotation.Value;
@@ -7,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
-import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.regions.Region;
@@ -30,6 +30,7 @@ public class DynamoDbConfiguration {
     }
 
     @Bean
+    @NotTest
     public DynamoDbEnhancedClient localStackDynamoDbEnhancedClient(@Value("${dynamodb.tablename}") String tableName) {
         DynamoDbClient dynamoDbClient =
             DynamoDbClient.builder()
@@ -41,4 +42,5 @@ public class DynamoDbConfiguration {
             .dynamoDbClient(dynamoDbClient)
             .build();
     }
+
 }

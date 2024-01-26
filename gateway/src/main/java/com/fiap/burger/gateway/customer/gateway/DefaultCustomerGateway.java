@@ -5,9 +5,10 @@ import com.fiap.burger.gateway.customer.model.CustomerModel;
 import com.fiap.burger.usecase.adapter.gateway.CustomerGateway;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
-import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
+import software.amazon.awssdk.enhanced.dynamodb.*;
+import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
+import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
+import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest;
 
 @Repository
 public class DefaultCustomerGateway implements CustomerGateway {
@@ -21,8 +22,13 @@ public class DefaultCustomerGateway implements CustomerGateway {
     }
 
     @Override
-    public Customer findById(Long id) {
-        return null;
+    public Customer findById(String id) {
+        QueryConditional queryConditional = QueryConditional
+            .keyEqualTo(Key.builder().partitionValue(id).
+                build());
+
+        PageIterable<CustomerModel>  pages = table.query(QueryEnhancedRequest.builder().queryConditional(queryConditional).build());
+        return pages.items().stream().findFirst().map(CustomerModel::toEntity).orElse(null);
     }
 
     @Override
@@ -34,8 +40,14 @@ public class DefaultCustomerGateway implements CustomerGateway {
 
     @Override
     public Customer findByCpf(String cpf) {
-        return null;
-    }
+        DynamoDbIndex<CustomerModel> secIndex = table.index("id-cpf");
 
+        QueryConditional queryConditional = QueryConditional
+            .keyEqualTo(Key.builder().partitionValue(cpf).
+                build());
+
+        PageIterable<CustomerModel>  pages = ( (PageIterable<CustomerModel>) secIndex.query(QueryEnhancedRequest.builder().queryConditional(queryConditional).build()) );
+        return pages.items().stream().findFirst().map(CustomerModel::toEntity).orElse(null);
+    }
 
 }
