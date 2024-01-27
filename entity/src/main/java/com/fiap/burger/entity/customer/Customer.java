@@ -1,17 +1,18 @@
 package com.fiap.burger.entity.customer;
 
-import com.fiap.burger.entity.common.BaseEntity;
+import com.fiap.burger.entity.common.AuditableEntity;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class Customer extends BaseEntity {
+public class Customer extends AuditableEntity {
 
+    private String id;
     private String cpf;
     private String email;
     private String name;
 
-    public Customer(Long id) {
+    public Customer(String id) {
         this.id = id;
     }
 
@@ -35,6 +36,9 @@ public class Customer extends BaseEntity {
         );
     }
 
+    public String getId() {
+        return id;
+    }
     public String getCpf() {
         return cpf;
     }
@@ -47,7 +51,7 @@ public class Customer extends BaseEntity {
         return name;
     }
 
-    public Customer(Long id, String cpf, String email, String name) {
+    public Customer(String id, String cpf, String email, String name) {
         this.id = id;
         this.cpf = cpf;
         this.email = email;
@@ -61,7 +65,7 @@ public class Customer extends BaseEntity {
     }
 
     public Customer(
-        Long id,
+        String id,
         String cpf,
         String email,
         String name,

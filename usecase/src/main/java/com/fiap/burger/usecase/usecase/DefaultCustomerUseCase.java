@@ -17,7 +17,7 @@ public class DefaultCustomerUseCase implements CustomerUseCase {
         this.repository = repository;
     }
 
-    public Customer findById(Long id) {
+    public Customer findById(String id) {
         return repository.findById(id);
     }
 

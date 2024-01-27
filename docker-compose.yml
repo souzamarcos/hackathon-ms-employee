@@ -1,21 +1,5 @@
 version: '3.3'
 services:
-  mysql:
-    image: mysql:8.0
-    restart: always
-    environment:
-      MYSQL_DATABASE: 'burger'
-      MYSQL_USER: 'user'
-      MYSQL_PASSWORD: 'password'
-      MYSQL_ROOT_PASSWORD: 'password'
-    healthcheck:
-      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
-      timeout: 3s
-      retries: 5
-    ports:
-      - '3306:3306'
-    expose:
-      - '3306'
   localstack:
     container_name: "${LOCALSTACK_DOCKER_NAME-localstack_cloud}"
     image: localstack/localstack
@@ -36,13 +20,6 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
   application:
     build: .
-    depends_on:
-      mysql:
-        condition: service_healthy
-    environment:
-      SPRING_DATASOURCE_URL: 'jdbc:mysql://mysql:3306/burger'
-      SPRING_DATASOURCE_USERNAME: 'user'
-      SPRING_DATASOURCE_PASSWORD: 'password'
     ports:
       - '8080:8080'
     expose:

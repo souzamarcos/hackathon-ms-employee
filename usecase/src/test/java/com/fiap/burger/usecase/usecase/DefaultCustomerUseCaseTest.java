@@ -29,7 +29,7 @@ class DefaultCustomerUseCaseTest {
 
     @Test
     void shouldFindById() {
-        var id = 1L;
+        var id = "1L";
         var expected = new CustomerBuilder().withId(id).build();
 
         when(gateway.findById(id)).thenReturn(expected);
@@ -84,7 +84,7 @@ class DefaultCustomerUseCaseTest {
 
     @Test
     void shouldThrowInvalidAttributeExceptionWhenCustomerIdIsNotNullToInsert() {
-        Customer customer = new CustomerBuilder().withId(1L).build();
+        Customer customer = new CustomerBuilder().withId("1L").build();
 
         assertThrows(InvalidAttributeException.class, () -> useCase.insert(customer));
 

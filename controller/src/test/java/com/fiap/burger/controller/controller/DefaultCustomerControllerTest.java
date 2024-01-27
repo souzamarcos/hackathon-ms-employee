@@ -28,7 +28,7 @@ class DefaultCustomerControllerTest {
 
     @Test
     void shouldFindById() {
-        var id = 1L;
+        var id = "1L";
         var expected = new Customer(id);
 
         when(useCase.findById(id)).thenReturn(expected);
@@ -42,7 +42,7 @@ class DefaultCustomerControllerTest {
 
     @Test
     void shouldThrownCustomerNotFoundExceptionWhenCustomerNotFoundById() {
-        var id = 1L;
+        var id = "1L";
 
         when(useCase.findById(id)).thenReturn(null);
 
@@ -54,7 +54,7 @@ class DefaultCustomerControllerTest {
     @Test
     void shouldFindByCpf() {
         var cpf = "12345678909";
-        var expected = new Customer(1L);
+        var expected = new Customer("1L");
 
         when(useCase.findByCpf(cpf)).thenReturn(expected);
 
@@ -78,7 +78,7 @@ class DefaultCustomerControllerTest {
 
     @Test
     void shouldInsertCustomer() {
-        var customer = new Customer(1L);
+        var customer = new Customer("1L");
 
         when(useCase.insert(customer)).thenReturn(customer);
 

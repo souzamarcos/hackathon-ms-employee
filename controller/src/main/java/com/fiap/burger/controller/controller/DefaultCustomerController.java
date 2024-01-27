@@ -13,7 +13,7 @@ public class DefaultCustomerController implements CustomerController {
     @Autowired
     private CustomerUseCase useCase;
 
-    public Customer findById(@PathVariable Long customerId) {
+    public Customer findById(@PathVariable String customerId) {
         var persistedCustomer = useCase.findById(customerId);
         if (persistedCustomer == null) throw new CustomerNotFoundException(customerId);
         return persistedCustomer;

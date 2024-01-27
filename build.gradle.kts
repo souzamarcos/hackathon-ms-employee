@@ -20,14 +20,39 @@ subprojects {
 	java.sourceCompatibility = JavaVersion.VERSION_19
 
 	repositories {
+		maven {
+			name
+			setUrl("https://s3-us-west-2.amazonaws.com/dynamodb-local/release")
+		}
+	}
+
+	repositories {
 		mavenCentral()
 	}
 
 	dependencies {
 		implementation("org.jacoco:org.jacoco.ant:0.8.10")
+		implementation("com.amazonaws:aws-java-sdk-dynamodb:1.12.644")
+		implementation("software.amazon.awssdk:dynamodb:2.17.28")
+		implementation("software.amazon.awssdk:dynamodb-enhanced:2.17.28")
 
 		//Test
 		testImplementation(rootProject.libs.spring.boot.starter.test)
+		testImplementation(rootProject.libs.cucumber.java)
+		testImplementation(rootProject.libs.cucumber.junit)
+		testImplementation(rootProject.libs.cucumber.spring)
+		testImplementation(rootProject.libs.cucumber.junit.platform.engine)
+		testImplementation("org.junit.platform:junit-platform-suite:1.9.3")
+		testImplementation("io.rest-assured:rest-assured:5.3.0")
+		testImplementation("io.rest-assured:json-schema-validator:5.3.1")
+		testImplementation("com.amazonaws:DynamoDBLocal:2.2.1")
+		testImplementation("software.amazon.awssdk:url-connection-client:2.23.10")
+
+		runtimeOnly("org.antlr:antlr4-runtime") {
+			version {
+				strictly("4.9.3")
+			}
+		}
 	}
 
 	tasks.withType<Test> {

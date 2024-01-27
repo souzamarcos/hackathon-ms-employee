@@ -6,7 +6,7 @@ public class CustomerNotFoundException extends NotFoundException {
         super("Customer not found");
     }
 
-    public CustomerNotFoundException(Long customerId) {
+    public CustomerNotFoundException(String customerId) {
         super("Customer " + customerId + " not found");
     }
 }

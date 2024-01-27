@@ -10,7 +10,7 @@ class CustomerTest {
 
     @Test
     void shouldCreateInstanceWithOnlyIdConstructor() {
-        var id = 1L;
+        var id = "1L";
 
         Customer actual = new Customer(id);
 
@@ -33,7 +33,7 @@ class CustomerTest {
 
     @Test
     void shouldCreateInstanceWithSimpleConstructorWithId() {
-        var id = 1L;
+        var id = "1L";
         var cpf = "12345678909";
         var email = "email@email.com";
         var name = "Cliente Exemplo";
@@ -49,7 +49,7 @@ class CustomerTest {
 
     @Test
     void shouldCreateInstanceWithFullConstructor() {
-        var id = 1L;
+        var id = "1L";
         var cpf = "12345678909";
         var email = "email@email.com";
         var name = "Cliente Exemplo";

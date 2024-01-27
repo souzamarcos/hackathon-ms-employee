@@ -1,42 +1,53 @@
 package com.fiap.burger.gateway.customer.gateway;
 
 import com.fiap.burger.entity.customer.Customer;
-import com.fiap.burger.gateway.customer.dao.CustomerDAO;
-import com.fiap.burger.gateway.customer.model.CustomerJPA;
-import com.fiap.burger.usecase.adapter.gateway.CustomerCpfGateway;
+import com.fiap.burger.gateway.customer.model.CustomerModel;
 import com.fiap.burger.usecase.adapter.gateway.CustomerGateway;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
+import software.amazon.awssdk.enhanced.dynamodb.*;
+import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
+import software.amazon.awssdk.enhanced.dynamodb.model.QueryConditional;
+import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest;
 
 @Repository
 public class DefaultCustomerGateway implements CustomerGateway {
 
-    @Autowired
-    private CustomerDAO customerDAO;
+    private DynamoDbEnhancedClient enhancedCustomer;
+    private DynamoDbTable<CustomerModel> table;
 
-    @Autowired
-    private CustomerCpfGateway customerCpfGateway;
+    DefaultCustomerGateway(DynamoDbEnhancedClient enhancedCustomer, @Value("${dynamodb.tablename}") String tableName) {
+        this.enhancedCustomer = enhancedCustomer;
+        this.table = enhancedCustomer.table(tableName, TableSchema.fromBean(CustomerModel.class));
+    }
 
     @Override
-    public Customer findById(Long id) {
-        return customerDAO.findById(id).map(CustomerJPA::toEntity).orElse(null);
+    public Customer findById(String id) {
+        QueryConditional queryConditional = QueryConditional
+            .keyEqualTo(Key.builder().partitionValue(id).
+                build());
+
+        PageIterable<CustomerModel>  pages = table.query(QueryEnhancedRequest.builder().queryConditional(queryConditional).build());
+        return pages.items().stream().findFirst().map(CustomerModel::toEntity).orElse(null);
+    }
+
+    @Override
+    public Customer save(Customer customer) {
+        var newCustomer = new CustomerModel(customer);
+        table.putItem(newCustomer);
+        return newCustomer.toEntity();
     }
 
     @Override
     public Customer findByCpf(String cpf) {
-        Optional<Customer> customer = customerDAO.findByCpf(cpf).map(CustomerJPA::toEntity);
-        return customer.orElse(null);
-    }
+        DynamoDbIndex<CustomerModel> secIndex = table.index("id-cpf");
 
-    @Override
-    @Transactional
-    public Customer save(Customer customer) {
-        Customer persisted = customerDAO.save(CustomerJPA.toJPA(customer)).toEntity();
-        customerCpfGateway.save(persisted.getCpf(), persisted.getId());
-        return persisted;
+        QueryConditional queryConditional = QueryConditional
+            .keyEqualTo(Key.builder().partitionValue(cpf).
+                build());
+
+        PageIterable<CustomerModel>  pages = ( (PageIterable<CustomerModel>) secIndex.query(QueryEnhancedRequest.builder().queryConditional(queryConditional).build()) );
+        return pages.items().stream().findFirst().map(CustomerModel::toEntity).orElse(null);
     }
 
 }

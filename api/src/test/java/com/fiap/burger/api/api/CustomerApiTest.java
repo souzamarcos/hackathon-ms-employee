@@ -24,7 +24,7 @@ class CustomerApiTest {
 
     @Test
     void shouldFindById() {
-        var id = 1L;
+        var id = "1L";
         var customer = new Customer(id, "12345678901", "email@email.com", "Nome");
         var expected = new CustomerResponseDto(id, "12345678901", "email@email.com", "Nome");
 
@@ -39,7 +39,7 @@ class CustomerApiTest {
 
     @Test
     void shouldFindByCpf() {
-        var id = 1L;
+        var id = "1L";
         var cpf = "12345678901";
         var customer = new Customer(id, cpf, "email@email.com", "Nome");
         var expected = new CustomerResponseDto(id, cpf, "email@email.com", "Nome");
@@ -55,7 +55,7 @@ class CustomerApiTest {
 
     @Test
     void shouldInsert() {
-        var id = 1L;
+        var id = "1L";
         var cpf = "12345678901";
         var request = new CustomerInsertRequestDto(cpf, "email@email.com", "Nome");
         var customer = new Customer(id, cpf, "email@email.com", "Nome");

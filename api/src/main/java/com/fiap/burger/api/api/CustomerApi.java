@@ -23,7 +23,7 @@ public class CustomerApi {
         @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
     })
     @GetMapping("/{customerId}")
-    public CustomerResponseDto findById(@PathVariable Long customerId) {
+    public CustomerResponseDto findById(@PathVariable String customerId) {
         return CustomerResponseDto.toResponseDto(customerController.findById(customerId));
     }
 
