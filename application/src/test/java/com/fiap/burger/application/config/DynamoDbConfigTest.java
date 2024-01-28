@@ -76,7 +76,7 @@ public class DynamoDbConfigTest {
             .build();
 
         EnhancedGlobalSecondaryIndex enhancedGlobalSecondaryIndex = EnhancedGlobalSecondaryIndex.builder()
-            .indexName("id-cpf")
+            .indexName("cpf")
             .provisionedThroughput(ProvisionedThroughput.builder().readCapacityUnits(READ_CAPACITY_UNITS).writeCapacityUnits(CAPACITY_UNITS).build())
             .projection(Projection.builder().projectionType(ProjectionType.ALL).build())
             .build();

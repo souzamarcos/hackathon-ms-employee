@@ -4,19 +4,14 @@ awslocal dynamodb create-table \
    --attribute-definitions AttributeName=id,AttributeType=S \
                            AttributeName=cpf,AttributeType=S \
    --key-schema AttributeName=id,KeyType=HASH \
-                AttributeName=cpf,KeyType=RANGE \
    --provisioned-throughput ReadCapacityUnits=2,WriteCapacityUnits=2 \
     --global-secondary-index "[
         {
-      \"IndexName\": \"id-cpf\",
+      \"IndexName\": \"cpf\",
       \"KeySchema\": [
         {
            \"AttributeName\": \"cpf\",
           \"KeyType\": \"HASH\"
-        },
-        {
-           \"AttributeName\": \"id\",
-          \"KeyType\": \"RANGE\"
         }
       ],
       \"Projection\": {

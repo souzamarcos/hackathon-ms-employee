@@ -33,7 +33,7 @@ public class CustomerModel {
 
     @DynamoDbPartitionKey
     @DynamoDbAttribute("id")
-    @DynamoDbSecondarySortKey(indexNames = "id-cpf")
+    @DynamoDbSecondarySortKey(indexNames = "cpf")
     public String getId() {
         return id;
     }
@@ -43,7 +43,7 @@ public class CustomerModel {
     }
 
     @DynamoDbSortKey
-    @DynamoDbSecondaryPartitionKey(indexNames = "id-cpf")
+    @DynamoDbSecondaryPartitionKey(indexNames = "cpf")
     public String getCpf() {
         return cpf;
     }

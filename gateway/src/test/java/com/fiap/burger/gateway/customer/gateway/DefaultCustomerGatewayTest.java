@@ -84,7 +84,7 @@ class DefaultCustomerGatewayTest {
 
         DynamoDbIndex<CustomerModel> secIndex = mock(DynamoDbIndex.class);
 
-        when(table.index("id-cpf")).thenReturn(secIndex);
+        when(table.index("cpf")).thenReturn(secIndex);
         when(secIndex.query(any(QueryEnhancedRequest.class))).thenReturn(pageIterableMock);
 
         var actual = gateway.findByCpf(cpf);
