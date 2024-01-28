@@ -40,7 +40,7 @@ public class DefaultCustomerGateway implements CustomerGateway {
 
     @Override
     public Customer findByCpf(String cpf) {
-        DynamoDbIndex<CustomerModel> secIndex = table.index("id-cpf");
+        DynamoDbIndex<CustomerModel> secIndex = table.index("cpf");
 
         QueryConditional queryConditional = QueryConditional
             .keyEqualTo(Key.builder().partitionValue(cpf).
