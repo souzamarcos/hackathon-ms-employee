@@ -3,10 +3,15 @@ package com.fiap.burger.gateway.customer.model;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.fiap.burger.entity.customer.Customer;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.*;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondaryPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondarySortKey;
 
 @DynamoDbBean
 public class CustomerModel {
@@ -22,7 +27,7 @@ public class CustomerModel {
     public CustomerModel() {}
 
     public CustomerModel(Customer customer) {
-        this.id = UUID.randomUUID().toString();
+        this.id = Optional.ofNullable(customer.getId()).orElse(UUID.randomUUID().toString());
         this.cpf = customer.getCpf();
         this.email = customer.getEmail();
         this.name = customer.getName();
@@ -42,7 +47,6 @@ public class CustomerModel {
         this.id = id;
     }
 
-    @DynamoDbSortKey
     @DynamoDbSecondaryPartitionKey(indexNames = "cpf")
     public String getCpf() {
         return cpf;

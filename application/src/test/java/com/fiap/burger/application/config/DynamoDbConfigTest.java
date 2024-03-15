@@ -97,7 +97,6 @@ public class DynamoDbConfigTest {
             for( Map<String, AttributeValue> item: scanResponse.items()){
                 Map<String, AttributeValue> deleteKey = new HashMap<>();
                 deleteKey.put("id",item.get("id"));
-                deleteKey.put("cpf",item.get("cpf"));
                 dynamoDbClient.deleteItem(DeleteItemRequest.builder()
                     .tableName("tf-customers-table")
                     .key(deleteKey).build());

@@ -45,4 +45,14 @@ public class CustomerApi {
         return CustomerResponseDto.toResponseDto(customerController.insert(customerDto.toEntity()));
     }
 
+    @Operation(summary = "Remover cliente", description = "Remover um cliente", tags = {"cliente"})
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "400", description = "Cliente inválido"),
+        @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+    })
+    @DeleteMapping("/{customerCpf}")
+    public String deleteByCpf(@RequestBody @PathVariable String customerCpf) {
+        return customerController.deleteByCpf(customerCpf);
+    }
+
 }
