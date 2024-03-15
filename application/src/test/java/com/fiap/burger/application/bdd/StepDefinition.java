@@ -40,8 +40,8 @@ public class StepDefinition extends CucumberIntegrationTest {
     public void clienteFoiRegistrado() {
         customerResponse = submeterUmNovoCliente();
     }
-    @Quando("requisitar a busca de um pedido por id")
-    public void requisitarBuscaDePedidoPorId() {
+    @Quando("requisitar a busca de um cliente por id")
+    public void requisitarBuscaDeClientePorId() {
         response = given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
@@ -52,11 +52,25 @@ public class StepDefinition extends CucumberIntegrationTest {
         response.then()
             .statusCode(HttpStatus.OK.value());
     }
-    @Quando("requisitar a busca de um pedido por cpf")
-    public void requisitarBuscaDePedidoPorCpf() {
+    @Quando("requisitar a busca de um cliente por cpf")
+    public void requisitarBuscaDeClientePorCpf() {
         response = given()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
             .get(getEndpoint() + "/by-cpf/{cpf}", customerResponse.cpf().toString());
+    }
+
+    @Quando("requisitar a exclusao de um cliente por cpf")
+    public void requisitarExclusaoDeClientePorCpf() {
+        response = given()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .delete(getEndpoint() + "/{cpf}", customerResponse.cpf().toString());
+    }
+
+    @Entao("a mensagem de exclusao é exibida com sucesso")
+    public void mensagemDeExclusaoExibidaComSucesso() {
+        response.then()
+            .statusCode(HttpStatus.OK.value());
     }
 }

@@ -8,4 +8,6 @@ public interface CustomerController {
     Customer findByCpf(String cpf);
 
     Customer insert(Customer customer);
+
+    String deleteByCpf(String cpf);
 }

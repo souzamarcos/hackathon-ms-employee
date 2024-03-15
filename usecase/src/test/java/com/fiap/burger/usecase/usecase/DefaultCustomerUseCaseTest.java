@@ -6,13 +6,18 @@ import com.fiap.burger.usecase.misc.CustomerBuilder;
 import com.fiap.burger.usecase.misc.exception.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Nested;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class DefaultCustomerUseCaseTest {
 
@@ -55,120 +60,151 @@ class DefaultCustomerUseCaseTest {
         verify(gateway, times(1)).findByCpf(cpf);
     }
 
-    @Test
-    void shouldSaveCustomer() {
-        Customer customer = new CustomerBuilder().withId(null).build();
+    @Nested
+    class saveCustomer {
+        @Test
+        void shouldSaveCustomer() {
+            Customer customer = new CustomerBuilder().withId(null).build();
 
-        when(gateway.save(customer)).thenReturn(customer);
+            when(gateway.save(customer)).thenReturn(customer);
 
-        Customer actual = useCase.insert(customer);
+            Customer actual = useCase.insert(customer);
 
-        assertEquals(customer, actual);
+            assertEquals(customer, actual);
 
-        verify(gateway, times(1)).save(customer);
+            verify(gateway, times(1)).save(customer);
+        }
+
+
+        @Test
+        void shouldThrowCustomerCpfAlreadyExistsExceptionWhenCustomerAlreadyExistsToInsert() {
+            var cpf = "68203895077";
+            Customer customer = new CustomerBuilder().withId(null).withCpf(cpf).build();
+
+            when(gateway.findByCpf(cpf)).thenReturn(customer);
+
+            assertThrows(CustomerCpfAlreadyExistsException.class, () -> useCase.insert(customer));
+
+            verify(gateway, times(1)).findByCpf(cpf);
+            verify(gateway, times(0)).save(customer);
+        }
+
+        @Test
+        void shouldThrowInvalidAttributeExceptionWhenCustomerIdIsNotNullToInsert() {
+            Customer customer = new CustomerBuilder().withId("1L").build();
+
+            assertThrows(InvalidAttributeException.class, () -> useCase.insert(customer));
+
+            verify(gateway, times(0)).save(customer);
+        }
+
+        @Test
+        void shouldThrowNullAttributeExceptionWhenCustomerCpfIsNullToInsert() {
+            Customer customer = new CustomerBuilder().withId(null).withCpf(null).build();
+
+            assertThrows(NullAttributeException.class, () -> useCase.insert(customer));
+
+            verify(gateway, times(0)).save(customer);
+        }
+
+        @Test
+        void shouldThrowBlankAttributeExceptionWhenCustomerCpfIsBlankToInsert() {
+            Customer customer = new CustomerBuilder().withId(null).withCpf("    ").build();
+
+            assertThrows(BlankAttributeException.class, () -> useCase.insert(customer));
+
+            verify(gateway, times(0)).save(customer);
+        }
+
+        @Test
+        void shouldThrowInvalidCPFExceptionExceptionWhenCustomerCpfHasNonNumericCharactersToInsert() {
+            Customer customer = new CustomerBuilder().withId(null).withCpf("12345A2345").build();
+
+            assertThrows(InvalidCPFException.class, () -> useCase.insert(customer));
+
+            verify(gateway, times(0)).save(customer);
+        }
+
+        @Test
+        void shouldThrowInvalidCPFExceptionExceptionWhenCustomerCpfIsInvalidToInsert() {
+            Customer customer = new CustomerBuilder().withId(null).withCpf("000000000000").build();
+
+            assertThrows(InvalidCPFException.class, () -> useCase.insert(customer));
+
+            verify(gateway, times(0)).save(customer);
+        }
+
+        @Test
+        void shouldThrowNullAttributeExceptionWhenCustomerEmailIsNullToInsert() {
+            Customer customer = new CustomerBuilder().withId(null).withEmail(null).build();
+
+            assertThrows(NullAttributeException.class, () -> useCase.insert(customer));
+
+            verify(gateway, times(0)).save(customer);
+        }
+
+        @Test
+        void shouldThrowBlankAttributeExceptionWhenCustomerEmailIsBlankToInsert() {
+            Customer customer = new CustomerBuilder().withId(null).withEmail("    ").build();
+
+            assertThrows(BlankAttributeException.class, () -> useCase.insert(customer));
+
+            verify(gateway, times(0)).save(customer);
+        }
+
+        @Test
+        void shouldThrowInvalidEmailFormatExceptionWhenCustomerEmailHasInvalidFormatToInsert() {
+            Customer customer = new CustomerBuilder().withId(null).withEmail("emailemailemail").build();
+
+            assertThrows(InvalidEmailFormatException.class, () -> useCase.insert(customer));
+
+            verify(gateway, times(0)).save(customer);
+        }
+
+        @Test
+        void shouldThrowNullAttributeExceptionWhenCustomerNameIsNullToInsert() {
+            Customer customer = new CustomerBuilder().withId(null).withName(null).build();
+
+            assertThrows(NullAttributeException.class, () -> useCase.insert(customer));
+
+            verify(gateway, times(0)).save(customer);
+        }
+
+        @Test
+        void shouldThrowBlankAttributeExceptionWhenCustomerNameIsBlankToInsert() {
+            Customer customer = new CustomerBuilder().withId(null).withName("    ").build();
+
+            assertThrows(BlankAttributeException.class, () -> useCase.insert(customer));
+
+            verify(gateway, times(0)).save(customer);
+        }
     }
 
+    @Nested
+    class deleteCustomerByCpf {
+        @Test
+        void shouldDeleteCustomerByCpf() {
+            var id = "1L";
+            var cpf = "16565824738";
+            var customer = new CustomerBuilder().withId(id).withCpf(cpf).build();
 
-    @Test
-    void shouldThrowCustomerCpfAlreadyExistsExceptionWhenCustomerAlreadyExistsToInsert() {
-        var cpf = "68203895077";
-        Customer customer = new CustomerBuilder().withId(null).withCpf(cpf).build();
+            when(gateway.findByCpf(cpf)).thenReturn(customer);
 
-        when(gateway.findByCpf(cpf)).thenReturn(customer);
+            useCase.deleteByCpf(cpf);
 
-        assertThrows(CustomerCpfAlreadyExistsException.class, () -> useCase.insert(customer));
+            verify(gateway, times(1)).deleteById(id);
+        }
 
-        verify(gateway, times(1)).findByCpf(cpf);
-        verify(gateway, times(0)).save(customer);
+        @Test
+        void shouldThrowProductExceptionWhenProductToDeleteDontExist() {
+            var cpf = "16565824738";
+
+            when(gateway.findById(cpf)).thenReturn(null);
+
+            assertThrows(CustomerNotFoundException.class, () -> useCase.deleteByCpf(cpf));
+
+            verify(gateway, never()).deleteById(any());
+        }
     }
 
-    @Test
-    void shouldThrowInvalidAttributeExceptionWhenCustomerIdIsNotNullToInsert() {
-        Customer customer = new CustomerBuilder().withId("1L").build();
-
-        assertThrows(InvalidAttributeException.class, () -> useCase.insert(customer));
-
-        verify(gateway, times(0)).save(customer);
-    }
-
-    @Test
-    void shouldThrowNullAttributeExceptionWhenCustomerCpfIsNullToInsert() {
-        Customer customer = new CustomerBuilder().withId(null).withCpf(null).build();
-
-        assertThrows(NullAttributeException.class, () -> useCase.insert(customer));
-
-        verify(gateway, times(0)).save(customer);
-    }
-
-    @Test
-    void shouldThrowBlankAttributeExceptionWhenCustomerCpfIsBlankToInsert() {
-        Customer customer = new CustomerBuilder().withId(null).withCpf("    ").build();
-
-        assertThrows(BlankAttributeException.class, () -> useCase.insert(customer));
-
-        verify(gateway, times(0)).save(customer);
-    }
-
-    @Test
-    void shouldThrowInvalidCPFExceptionExceptionWhenCustomerCpfHasNonNumericCharactersToInsert() {
-        Customer customer = new CustomerBuilder().withId(null).withCpf("12345A2345").build();
-
-        assertThrows(InvalidCPFException.class, () -> useCase.insert(customer));
-
-        verify(gateway, times(0)).save(customer);
-    }
-
-    @Test
-    void shouldThrowInvalidCPFExceptionExceptionWhenCustomerCpfIsInvalidToInsert() {
-        Customer customer = new CustomerBuilder().withId(null).withCpf("000000000000").build();
-
-        assertThrows(InvalidCPFException.class, () -> useCase.insert(customer));
-
-        verify(gateway, times(0)).save(customer);
-    }
-
-    @Test
-    void shouldThrowNullAttributeExceptionWhenCustomerEmailIsNullToInsert() {
-        Customer customer = new CustomerBuilder().withId(null).withEmail(null).build();
-
-        assertThrows(NullAttributeException.class, () -> useCase.insert(customer));
-
-        verify(gateway, times(0)).save(customer);
-    }
-
-    @Test
-    void shouldThrowBlankAttributeExceptionWhenCustomerEmailIsBlankToInsert() {
-        Customer customer = new CustomerBuilder().withId(null).withEmail("    ").build();
-
-        assertThrows(BlankAttributeException.class, () -> useCase.insert(customer));
-
-        verify(gateway, times(0)).save(customer);
-    }
-
-    @Test
-    void shouldThrowInvalidEmailFormatExceptionWhenCustomerEmailHasInvalidFormatToInsert() {
-        Customer customer = new CustomerBuilder().withId(null).withEmail("emailemailemail").build();
-
-        assertThrows(InvalidEmailFormatException.class, () -> useCase.insert(customer));
-
-        verify(gateway, times(0)).save(customer);
-    }
-
-    @Test
-    void shouldThrowNullAttributeExceptionWhenCustomerNameIsNullToInsert() {
-        Customer customer = new CustomerBuilder().withId(null).withName(null).build();
-
-        assertThrows(NullAttributeException.class, () -> useCase.insert(customer));
-
-        verify(gateway, times(0)).save(customer);
-    }
-
-    @Test
-    void shouldThrowBlankAttributeExceptionWhenCustomerNameIsBlankToInsert() {
-        Customer customer = new CustomerBuilder().withId(null).withName("    ").build();
-
-        assertThrows(BlankAttributeException.class, () -> useCase.insert(customer));
-
-        verify(gateway, times(0)).save(customer);
-    }
 }
