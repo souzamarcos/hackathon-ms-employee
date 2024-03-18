@@ -28,4 +28,9 @@ public class DefaultCustomerController implements CustomerController {
     public Customer insert(Customer customer) {
         return useCase.insert(customer);
     }
+
+    public String deleteByCpf(String cpf) {
+        useCase.deleteByCpf(cpf);
+        return "Customer has been successfully deleted.";
+    }
 }

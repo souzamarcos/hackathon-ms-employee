@@ -13,8 +13,8 @@ import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest;
 @Repository
 public class DefaultCustomerGateway implements CustomerGateway {
 
-    private DynamoDbEnhancedClient enhancedCustomer;
-    private DynamoDbTable<CustomerModel> table;
+    private final DynamoDbEnhancedClient enhancedCustomer;
+    private final DynamoDbTable<CustomerModel> table;
 
     DefaultCustomerGateway(DynamoDbEnhancedClient enhancedCustomer, @Value("${dynamodb.tablename}") String tableName) {
         this.enhancedCustomer = enhancedCustomer;
@@ -48,6 +48,11 @@ public class DefaultCustomerGateway implements CustomerGateway {
 
         PageIterable<CustomerModel>  pages = ( (PageIterable<CustomerModel>) secIndex.query(QueryEnhancedRequest.builder().queryConditional(queryConditional).build()) );
         return pages.items().stream().findFirst().map(CustomerModel::toEntity).orElse(null);
+    }
+
+    @Override
+    public void deleteById(String id) {
+        table.deleteItem(Key.builder().partitionValue(id).build());
     }
 
 }
