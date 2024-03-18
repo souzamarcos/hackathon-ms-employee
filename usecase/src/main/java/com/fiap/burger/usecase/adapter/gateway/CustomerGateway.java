@@ -8,4 +8,6 @@ public interface CustomerGateway {
     Customer save(Customer customer);
 
     Customer findByCpf(String cpf);
+
+    void deleteById(String id);
 }

@@ -69,4 +69,17 @@ class CustomerApiTest {
 
         verify(controller, times(1)).insert(request.toEntity());
     }
+
+    @Test
+    void shouldDelete() {
+        var cpf = "12345678901";
+        var expected = "Customer has been successfully deleted.";
+        when(controller.deleteByCpf(cpf)).thenReturn("Customer has been successfully deleted.");
+
+        String actual = api.deleteByCpf(cpf);
+
+        assertEquals(expected, actual);
+
+        verify(controller, times(1)).deleteByCpf(cpf);
+    }
 }

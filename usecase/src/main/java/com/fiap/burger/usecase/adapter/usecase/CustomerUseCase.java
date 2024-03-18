@@ -8,4 +8,6 @@ public interface CustomerUseCase {
     Customer findByCpf(String cpf);
 
     Customer insert(Customer customer);
+
+    void deleteByCpf(String cpf);
 }

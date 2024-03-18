@@ -4,10 +4,13 @@ import com.fiap.burger.entity.customer.Customer;
 import com.fiap.burger.usecase.adapter.gateway.CustomerGateway;
 import com.fiap.burger.usecase.adapter.usecase.CustomerUseCase;
 import com.fiap.burger.usecase.misc.exception.CustomerCpfAlreadyExistsException;
+import com.fiap.burger.usecase.misc.exception.CustomerNotFoundException;
 import com.fiap.burger.usecase.misc.exception.InvalidAttributeException;
 
 import static com.fiap.burger.usecase.misc.validation.ValidationCPF.validateCPF;
-import static com.fiap.burger.usecase.misc.validation.ValidationUtils.*;
+import static com.fiap.burger.usecase.misc.validation.ValidationUtils.validateEmailFormat;
+import static com.fiap.burger.usecase.misc.validation.ValidationUtils.validateNotBlank;
+import static com.fiap.burger.usecase.misc.validation.ValidationUtils.validateNotNull;
 
 public class DefaultCustomerUseCase implements CustomerUseCase {
 
@@ -32,6 +35,12 @@ public class DefaultCustomerUseCase implements CustomerUseCase {
         }
         validateCustomerToInsert(customer);
         return repository.save(customer);
+    }
+
+    public void deleteByCpf(String cpf) {
+        var customer = findByCpf(cpf);
+        if (customer == null) throw new CustomerNotFoundException();
+        repository.deleteById(customer.getId());
     }
 
     private void validateCustomerToInsert(Customer customer) {

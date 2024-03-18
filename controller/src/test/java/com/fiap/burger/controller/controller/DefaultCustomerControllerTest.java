@@ -88,4 +88,17 @@ class DefaultCustomerControllerTest {
 
         verify(useCase, times(1)).insert(customer);
     }
+
+    @Test
+    void shouldDeleteCustomer() {
+        var cpf = "12345678901";
+        var expected = "Customer has been successfully deleted.";
+
+        String actual = controller.deleteByCpf(cpf);
+
+        assertEquals(expected, actual);
+
+        verify(useCase, times(1)).deleteByCpf(cpf);
+    }
+
 }

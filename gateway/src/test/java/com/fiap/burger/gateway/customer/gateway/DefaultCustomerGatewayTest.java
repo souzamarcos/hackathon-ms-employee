@@ -2,24 +2,21 @@ package com.fiap.burger.gateway.customer.gateway;
 
 import com.fiap.burger.gateway.customer.model.CustomerModel;
 import com.fiap.burger.gateway.misc.CustomerBuilder;
-import com.fiap.burger.usecase.adapter.gateway.CustomerCpfGateway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.PageImpl;
 import software.amazon.awssdk.core.pagination.sync.SdkIterable;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbIndex;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
+import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.Page;
 import software.amazon.awssdk.enhanced.dynamodb.model.PageIterable;
 import software.amazon.awssdk.enhanced.dynamodb.model.QueryEnhancedRequest;
 
 import java.util.Arrays;
-import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -32,9 +29,6 @@ class DefaultCustomerGatewayTest {
 
     @Mock
     DynamoDbTable<CustomerModel> table;
-
-    @Mock
-    CustomerCpfGateway customerCpfGateway;
 
     DefaultCustomerGateway gateway;
 
@@ -105,4 +99,15 @@ class DefaultCustomerGatewayTest {
 
         verify(table, times(1)).putItem(any(CustomerModel.class));
     }
+
+    @Test
+    void shouldDeleteCustomer() {
+        var id = "id";
+
+        gateway.deleteById(id);
+
+        verify(table, times(1)).deleteItem(Key.builder().partitionValue(id).build());
+    }
+
+
 }
