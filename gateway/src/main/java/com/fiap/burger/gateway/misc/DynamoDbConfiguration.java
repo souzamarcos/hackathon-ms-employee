@@ -16,6 +16,9 @@ import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 @Configuration
 public class DynamoDbConfiguration {
 
+    @Value("${localstack.url}")
+    private String LOCALSTACK_ENDPOINT;
+
     @Bean
     @Production
     @Primary
@@ -35,7 +38,7 @@ public class DynamoDbConfiguration {
         DynamoDbClient dynamoDbClient =
             DynamoDbClient.builder()
                 .region(Region.US_EAST_1)
-                .endpointOverride(URI.create("http://localhost:4566"))
+                .endpointOverride(URI.create(LOCALSTACK_ENDPOINT))
                 .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create("fiap", "fiap")))
                 .build();
         return DynamoDbEnhancedClient.builder()

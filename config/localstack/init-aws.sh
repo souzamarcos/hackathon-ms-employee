@@ -1,4 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+set -euo pipefail
+
 awslocal dynamodb create-table \
    --table-name tf-customers-table \
    --attribute-definitions AttributeName=id,AttributeType=S \
@@ -23,3 +26,7 @@ awslocal dynamodb create-table \
       }
     }
     ]"
+
+awslocal sqs create-queue --queue-name notification-queue
+awslocal sqs create-queue --queue-name order-queue
+awslocal sqs create-queue --queue-name payment-queue
