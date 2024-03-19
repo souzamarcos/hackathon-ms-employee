@@ -31,16 +31,17 @@ public class DynamoDbConfigTest {
     private static DynamoDBProxyServer server;
     private static final String port = "8000";
     private static final String uri = "http://localhost:"+port;
-    DynamoDbClient client;
 
     @Bean
     @Primary
     public DynamoDbEnhancedClient testDynamoDbEnhancedClient(@Value("${dynamodb.tablename}") String employeeTableName) throws Exception {
-        AwsDynamoDbLocalTestUtils.initSqLite();
-        server = ServerRunner.createServerFromCommandLineArgs(
-            new String[]{"-inMemory", "-port", port});
-        server.start();
+        if(server != null) {
+            server.stop();
+        }
 
+        AwsDynamoDbLocalTestUtils.initSqLite();
+        server = ServerRunner.createServerFromCommandLineArgs(new String[]{"-inMemory", "-port", port});
+        server.start();
         System.setProperty("software.amazon.awssdk.http.service.impl","software.amazon.awssdk.http.urlconnection.UrlConnectionSdkHttpService");
 
         DynamoDbClient dynamoDbClient = getDynamoDbClient();

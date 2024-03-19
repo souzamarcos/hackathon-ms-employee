@@ -4,6 +4,7 @@ import com.fiap.burger.usecase.adapter.gateway.EmployeeGateway;
 import com.fiap.burger.usecase.misc.EmployeeBuilder;
 import com.fiap.burger.usecase.misc.exception.EmployeeIdAlreadyExistsException;
 import com.fiap.burger.usecase.misc.exception.EmployeeNotFoundException;
+import com.fiap.burger.usecase.misc.token.TokenJwtUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,9 @@ import static org.mockito.Mockito.*;
 public class DefaultEmployeeUseCaseTest {
     @Mock
     EmployeeGateway gateway;
+
+    @Mock
+    TokenJwtUtils tokenJwtUtils;
 
     @InjectMocks
     DefaultEmployeeUseCase useCase;
@@ -87,12 +91,14 @@ public class DefaultEmployeeUseCaseTest {
             var expected = "gerar-token";
 
             when(gateway.findById(id)).thenReturn(employee);
+            when(tokenJwtUtils.generateEmployeeToken(employee)).thenReturn("gerar-token");
 
             var actual = useCase.login(id, password);
 
             assertEquals(expected, actual);
 
             verify(gateway, times(1)).findById(id);
+            verify(tokenJwtUtils, times(1)).generateEmployeeToken(employee);
         }
 
         @Test
@@ -105,6 +111,7 @@ public class DefaultEmployeeUseCaseTest {
             assertThrows(EmployeeNotFoundException.class, () -> useCase.login(id, password));
 
             verify(gateway, times(1)).findById(id);
+            verify(tokenJwtUtils, never()).generateEmployeeToken(any());
         }
 
         @Test
@@ -119,6 +126,7 @@ public class DefaultEmployeeUseCaseTest {
             assertThrows(EmployeeNotFoundException.class, () -> useCase.login(id, searchPassword));
 
             verify(gateway, times(1)).findById(id);
+            verify(tokenJwtUtils, never()).generateEmployeeToken(any());
         }
     }
 }

@@ -5,15 +5,19 @@ import com.fiap.burger.usecase.adapter.gateway.EmployeeGateway;
 import com.fiap.burger.usecase.adapter.usecase.EmployeeUseCase;
 import com.fiap.burger.usecase.misc.exception.EmployeeIdAlreadyExistsException;
 import com.fiap.burger.usecase.misc.exception.EmployeeNotFoundException;
+import com.fiap.burger.usecase.misc.token.TokenJwtUtils;
 
 import static com.fiap.burger.usecase.misc.validation.ValidationUtils.*;
 
 public class DefaultEmployeeUseCase implements EmployeeUseCase {
 
     private final EmployeeGateway gateway;
+    private final TokenJwtUtils tokenJwtUtils;
 
-    public DefaultEmployeeUseCase(EmployeeGateway gateway) {
+    public DefaultEmployeeUseCase(EmployeeGateway gateway,
+                                  TokenJwtUtils tokenJwtUtils) {
         this.gateway = gateway;
+        this.tokenJwtUtils = tokenJwtUtils;
     }
 
     @Override
@@ -23,6 +27,7 @@ public class DefaultEmployeeUseCase implements EmployeeUseCase {
             throw new EmployeeIdAlreadyExistsException();
         }
         validateEmployee(employee);
+        employee.setPassword(tokenJwtUtils.generatePasswordToken(employee.getPassword()));
         return gateway.save(employee);
     }
 
@@ -37,7 +42,7 @@ public class DefaultEmployeeUseCase implements EmployeeUseCase {
         if(persistedEmployee == null || !comparePasswords(password, persistedEmployee.getPassword())) {
             throw new EmployeeNotFoundException();
         }
-        return "gerar-token";
+        return tokenJwtUtils.generateEmployeeToken(persistedEmployee);
     }
 
     private void validateEmployee(Employee employee) {
@@ -51,6 +56,6 @@ public class DefaultEmployeeUseCase implements EmployeeUseCase {
     }
 
     private Boolean comparePasswords(String searchPassword, String storedPassword) {
-        return searchPassword.equals(storedPassword);
+        return tokenJwtUtils.generatePasswordToken(searchPassword).equals(storedPassword);
     }
 }
