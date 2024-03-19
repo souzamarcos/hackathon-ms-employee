@@ -16,7 +16,7 @@ import java.util.Optional;
 public class DefaultEmployeeGateway implements EmployeeGateway {
     private final DynamoDbTable<EmployeeModel> table;
 
-    public DefaultEmployeeGateway(DynamoDbEnhancedClient enhancedEmployee, @Value("${dynamodb.employee.tablename}") String tableName) {
+    public DefaultEmployeeGateway(DynamoDbEnhancedClient enhancedEmployee, @Value("${dynamodb.tablename}") String tableName) {
         this.table = enhancedEmployee.table(tableName, TableSchema.fromBean(EmployeeModel.class));
     }
 

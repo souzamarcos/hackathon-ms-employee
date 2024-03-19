@@ -1,17 +1,16 @@
 package com.fiap.burger.application.config;
 
-import software.amazon.awssdk.enhanced.dynamodb.model.EnhancedGlobalSecondaryIndex;
+import com.fiap.burger.gateway.employee.model.EmployeeModel;
+import org.springframework.context.annotation.Primary;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.services.dynamodb.model.*;
 import com.fiap.burger.application.utils.AwsDynamoDbLocalTestUtils;
-import com.fiap.burger.gateway.customer.model.CustomerModel;
-import com.fiap.burger.usecase.misc.profiles.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
@@ -25,7 +24,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-@Test
 public class DynamoDbConfigTest {
     public static final long READ_CAPACITY_UNITS = 10L;
     public static final long CAPACITY_UNITS = 10L;
@@ -36,7 +34,8 @@ public class DynamoDbConfigTest {
     DynamoDbClient client;
 
     @Bean
-    public DynamoDbEnhancedClient testDynamoDbEnhancedClient(@Value("${dynamodb.tablename}") String tableName) throws Exception {
+    @Primary
+    public DynamoDbEnhancedClient testDynamoDbEnhancedClient(@Value("${dynamodb.tablename}") String employeeTableName) throws Exception {
         AwsDynamoDbLocalTestUtils.initSqLite();
         server = ServerRunner.createServerFromCommandLineArgs(
             new String[]{"-inMemory", "-port", port});
@@ -48,7 +47,7 @@ public class DynamoDbConfigTest {
 
         DynamoDbEnhancedClient enhancedClient = getDynamoDbEnhancedClient(dynamoDbClient);
 
-        createTable(enhancedClient, tableName);
+        createTableEmployee(enhancedClient, employeeTableName);
 
         return enhancedClient;
     }
@@ -68,37 +67,29 @@ public class DynamoDbConfigTest {
             .build();
     }
 
-    public void createTable(DynamoDbEnhancedClient enhancedClient, String tableName) {
-        DynamoDbTable<CustomerModel> table = enhancedClient.table(tableName, TableSchema.fromBean(CustomerModel.class));
+    public void createTableEmployee(DynamoDbEnhancedClient enhancedClient, String tableName) {
+        DynamoDbTable<EmployeeModel> table = enhancedClient.table(tableName, TableSchema.fromBean(EmployeeModel.class));
         ProvisionedThroughput provisionedThroughput= ProvisionedThroughput.builder()
             .readCapacityUnits(READ_CAPACITY_UNITS)
             .writeCapacityUnits(CAPACITY_UNITS)
             .build();
-
-        EnhancedGlobalSecondaryIndex enhancedGlobalSecondaryIndex = EnhancedGlobalSecondaryIndex.builder()
-            .indexName("cpf")
-            .provisionedThroughput(ProvisionedThroughput.builder().readCapacityUnits(READ_CAPACITY_UNITS).writeCapacityUnits(CAPACITY_UNITS).build())
-            .projection(Projection.builder().projectionType(ProjectionType.ALL).build())
-            .build();
-
         table.createTable(builder -> builder
             .provisionedThroughput(provisionedThroughput)
-            .globalSecondaryIndices(enhancedGlobalSecondaryIndex)
         );
     }
 
-    public static void cleanTable() {
+    public static void cleanTableEmployee() {
         DynamoDbClient dynamoDbClient = getDynamoDbClient();
 
         ScanIterable scanIterable = dynamoDbClient.scanPaginator(ScanRequest.builder()
-            .tableName("tf-customers-table")
+            .tableName("tf-employees-table")
             .build());
         for(ScanResponse scanResponse:scanIterable){
             for( Map<String, AttributeValue> item: scanResponse.items()){
                 Map<String, AttributeValue> deleteKey = new HashMap<>();
                 deleteKey.put("id",item.get("id"));
                 dynamoDbClient.deleteItem(DeleteItemRequest.builder()
-                    .tableName("tf-customers-table")
+                    .tableName("tf-employees-table")
                     .key(deleteKey).build());
             }
         }

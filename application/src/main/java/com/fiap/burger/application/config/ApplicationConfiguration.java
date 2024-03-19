@@ -1,8 +1,8 @@
 package com.fiap.burger.application.config;
 
-import com.fiap.burger.usecase.adapter.gateway.CustomerGateway;
-import com.fiap.burger.usecase.adapter.usecase.CustomerUseCase;
-import com.fiap.burger.usecase.usecase.DefaultCustomerUseCase;
+import com.fiap.burger.usecase.adapter.gateway.EmployeeGateway;
+import com.fiap.burger.usecase.adapter.usecase.EmployeeUseCase;
+import com.fiap.burger.usecase.usecase.DefaultEmployeeUseCase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class ApplicationConfiguration {
 
     @Bean
-    public CustomerUseCase customerUseCase(CustomerGateway repository) {
-        return new DefaultCustomerUseCase(repository);
+    public EmployeeUseCase employeeUseCase(EmployeeGateway repository) {
+        return new DefaultEmployeeUseCase(repository);
     }
 }
