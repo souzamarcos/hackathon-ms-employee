@@ -5,7 +5,7 @@ plugins {
 }
 
 application {
-    mainClass.set("com.fiap.burger.application.boot.BurgerApplication")
+    mainClass.set("com.fiap.hackathon.application.boot.BurgerApplication")
     applicationDefaultJvmArgs = listOf(
             "-Duser.timezone=America/Sao_Paulo"
     )

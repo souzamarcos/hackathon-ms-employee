@@ -1,4 +1,4 @@
-rootProject.name = "ms-customer"
+rootProject.name = "ms-employee"
 include("application")
 include("api")
 include("controller")
