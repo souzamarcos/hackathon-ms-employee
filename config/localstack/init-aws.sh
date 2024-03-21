@@ -5,15 +5,15 @@ set -euo pipefail
 awslocal dynamodb create-table \
    --table-name tf-customers-table \
    --attribute-definitions AttributeName=id,AttributeType=S \
-                           AttributeName=cpf,AttributeType=S \
+                           AttributeName=email,AttributeType=S \
    --key-schema AttributeName=id,KeyType=HASH \
    --provisioned-throughput ReadCapacityUnits=2,WriteCapacityUnits=2 \
     --global-secondary-index "[
         {
-      \"IndexName\": \"cpf\",
+      \"IndexName\": \"email\",
       \"KeySchema\": [
         {
-           \"AttributeName\": \"cpf\",
+           \"AttributeName\": \"email\",
           \"KeyType\": \"HASH\"
         }
       ],
