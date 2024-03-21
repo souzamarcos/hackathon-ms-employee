@@ -26,7 +26,3 @@ awslocal dynamodb create-table \
       }
     }
     ]"
-
-awslocal sqs create-queue --queue-name notification-queue
-awslocal sqs create-queue --queue-name order-queue
-awslocal sqs create-queue --queue-name payment-queue
