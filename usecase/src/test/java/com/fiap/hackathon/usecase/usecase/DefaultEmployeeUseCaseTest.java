@@ -36,10 +36,13 @@ public class DefaultEmployeeUseCaseTest {
         @Test
         void shouldInsert() {
             var id = "ABC001";
-            var employee = new EmployeeBuilder().withId(id).build();
-            var expected = new EmployeeBuilder().withId(id).build();
+            var oldPassword = "entry-password";
+            var newPassword = "password-token";
+            var employee = new EmployeeBuilder().withId(id).withPassword(oldPassword).build();
+            var expected = new EmployeeBuilder().withId(id).withPassword(newPassword).build();
 
             when(gateway.findById(id)).thenReturn(null);
+            when(tokenJwtUtils.generatePasswordToken(employee.getPassword())).thenReturn(newPassword);
             when(gateway.save(employee)).thenReturn(employee);
 
             var actual = useCase.insert(employee);
@@ -47,6 +50,7 @@ public class DefaultEmployeeUseCaseTest {
             assertEquals(expected, actual);
 
             verify(gateway, times(1)).findById(id);
+            verify(tokenJwtUtils, times(1)).generatePasswordToken(oldPassword);
             verify(gateway, times(1)).save(employee);
         }
 
@@ -91,6 +95,7 @@ public class DefaultEmployeeUseCaseTest {
             var expected = "gerar-token";
 
             when(gateway.findById(id)).thenReturn(employee);
+            when(tokenJwtUtils.generatePasswordToken(password)).thenReturn(password);
             when(tokenJwtUtils.generateEmployeeToken(employee)).thenReturn("gerar-token");
 
             var actual = useCase.login(id, password);
@@ -98,6 +103,7 @@ public class DefaultEmployeeUseCaseTest {
             assertEquals(expected, actual);
 
             verify(gateway, times(1)).findById(id);
+            verify(tokenJwtUtils, times(1)).generatePasswordToken(password);
             verify(tokenJwtUtils, times(1)).generateEmployeeToken(employee);
         }
 
@@ -118,15 +124,18 @@ public class DefaultEmployeeUseCaseTest {
         void shouldThrowEmployeeNotFoundExceptionWhenEmployeeSearchPasswordDontMatchStoredPassword() {
             var id = "ABC001";
             var searchPassword = "password";
-            var storedPassword = "other-password";
-            var employee = new EmployeeBuilder().withId(id).withPassword(storedPassword).build();
+            var tokenSearchPassword = "token-search-password";
+            var tokenStoredPassword = "token-other-password";
+            var employee = new EmployeeBuilder().withId(id).withPassword(tokenStoredPassword).build();
 
             when(gateway.findById(id)).thenReturn(employee);
+            when(tokenJwtUtils.generatePasswordToken(searchPassword)).thenReturn(tokenSearchPassword);
 
             assertThrows(EmployeeNotFoundException.class, () -> useCase.login(id, searchPassword));
 
             verify(gateway, times(1)).findById(id);
             verify(tokenJwtUtils, never()).generateEmployeeToken(any());
+            verify(tokenJwtUtils, times(1)).generatePasswordToken(searchPassword);
         }
     }
 }

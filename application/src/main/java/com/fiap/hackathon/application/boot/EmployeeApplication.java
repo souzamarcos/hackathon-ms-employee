@@ -5,8 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 @SpringBootApplication(scanBasePackages = "com.fiap.hackathon", exclude = {DataSourceAutoConfiguration.class})
-public class BurgerApplication {
+public class EmployeeApplication {
     public static void main(String[] args) {
-        SpringApplication.run(BurgerApplication.class, args);
+        SpringApplication.run(EmployeeApplication.class, args);
     }
 }

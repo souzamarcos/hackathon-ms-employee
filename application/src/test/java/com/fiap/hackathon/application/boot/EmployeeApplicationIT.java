@@ -12,7 +12,7 @@ import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:application.properties")
-class BurgerApplicationIT {
+class EmployeeApplicationIT {
 
     @LocalServerPort
     private int port;
