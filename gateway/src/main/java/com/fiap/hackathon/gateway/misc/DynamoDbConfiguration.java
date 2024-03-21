@@ -33,7 +33,7 @@ public class DynamoDbConfiguration {
     }
 
     @Bean
-    public DynamoDbEnhancedClient localStackDynamoDbEnhancedClient(@Value("${dynamodb.employee.tablename}") String tableName) {
+    public DynamoDbEnhancedClient localStackDynamoDbEnhancedClient(@Value("${dynamodb.tablename}") String tableName) {
         DynamoDbClient dynamoDbClient =
             DynamoDbClient.builder()
                 .region(Region.US_EAST_1)
