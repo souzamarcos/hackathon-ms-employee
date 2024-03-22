@@ -31,8 +31,8 @@ public class DefaultEmployeeGatewayTest {
     @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
-        when(enhancedEmployee.table("tf-employees-table", TableSchema.fromBean(EmployeeModel.class))).thenReturn(table);
-        gateway = new DefaultEmployeeGateway(enhancedEmployee, "tf-employees-table");
+        when(enhancedEmployee.table("tf-employee-table", TableSchema.fromBean(EmployeeModel.class))).thenReturn(table);
+        gateway = new DefaultEmployeeGateway(enhancedEmployee, "tf-employee-table");
     }
 
     @Nested
