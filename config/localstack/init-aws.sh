@@ -3,7 +3,7 @@
 set -euo pipefail
 
 awslocal dynamodb create-table \
-   --table-name tf-employees-table \
+   --table-name tf-employee-table \
    --attribute-definitions AttributeName=id,AttributeType=S \
                            AttributeName=email,AttributeType=S \
    --key-schema AttributeName=id,KeyType=HASH \

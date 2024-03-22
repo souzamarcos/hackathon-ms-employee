@@ -83,14 +83,14 @@ public class DynamoDbConfigTest {
         DynamoDbClient dynamoDbClient = getDynamoDbClient();
 
         ScanIterable scanIterable = dynamoDbClient.scanPaginator(ScanRequest.builder()
-            .tableName("tf-employees-table")
+            .tableName("tf-employee-table")
             .build());
         for(ScanResponse scanResponse:scanIterable){
             for( Map<String, AttributeValue> item: scanResponse.items()){
                 Map<String, AttributeValue> deleteKey = new HashMap<>();
                 deleteKey.put("id",item.get("id"));
                 dynamoDbClient.deleteItem(DeleteItemRequest.builder()
-                    .tableName("tf-employees-table")
+                    .tableName("tf-employee-table")
                     .key(deleteKey).build());
             }
         }
